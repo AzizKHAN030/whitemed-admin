@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Store } from '@prisma/client';
-import { Separator } from '@radix-ui/react-separator';
 import axios from 'axios';
 import { Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -25,6 +24,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 import UseOrigin from '@/hooks/use-origin';
 
 interface SettingsFormProps {
