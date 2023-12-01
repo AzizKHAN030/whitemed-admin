@@ -5,10 +5,10 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Billboard, Store } from '@prisma/client';
+import { Billboard } from '@prisma/client';
 import axios from 'axios';
 import { Trash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 import ApiAlert from '@/components/api-alert';
@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import UseOrigin from '@/hooks/use-origin';
+import useOrigin from '@/hooks/use-origin';
 
 interface BillboardFormProps {
   initialData: Billboard | null;
@@ -44,7 +44,8 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const origin = UseOrigin();
+  const origin = useOrigin();
+  const params = useParams();
 
   const title = initialData ? 'Edit Billboard' : 'New Billboard';
   const description = initialData
@@ -60,22 +61,33 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const onSubmit = async (values: BillboardFormValues) => {
     try {
       setLoading(true);
-      const request = axios.patch(`/api/stores/${initialData?.id}`, values);
-      const loadingMessage = initialData ? 'Saving changes...' : 'Creating...';
-      const successMessage = initialData
-        ? 'Changes saved!'
-        : 'Billboard created!';
-      const errorMessage = initialData
-        ? 'Error saving changes'
-        : 'Error creating a billboard';
 
-      await toast.promise(request, {
-        loading: loadingMessage,
-        success: successMessage,
-        error: errorMessage,
-      });
+      if (initialData) {
+        const request = axios.patch(
+          `/api/${params.storeId}/billboards/${params.billboardId}`,
+          values
+        );
 
-      router.refresh();
+        await toast.promise(request, {
+          loading: 'Saving changes...',
+          success: 'Changes saved!',
+          error: 'Error saving changes',
+        });
+
+        router.refresh();
+      } else {
+        const request = axios.post(`/api/${params.storeId}/billboards`, values);
+
+        const {
+          data: { id },
+        } = await toast.promise(request, {
+          loading: 'Creating...',
+          success: 'Billboard created!',
+          error: 'Error creating a billboard',
+        });
+
+        router.push(`/${params.storeId}/billboards/${id}`);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -86,7 +98,10 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      const request = axios.delete(`/api/stores/${initialData?.id}`);
+
+      const request = axios.delete(
+        `/api/${params.storeId}/billboards/${params.billboardId}`
+      );
 
       await toast.promise(request, {
         loading: 'Deleting billboard...',
