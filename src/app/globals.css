@@ -8,6 +8,10 @@ body,
   height: 100%;
 }
 
+.cl-card > *:last-child {
+  display: none;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

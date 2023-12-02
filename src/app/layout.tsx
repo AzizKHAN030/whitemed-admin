@@ -20,7 +20,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        elements: {
+          footer: 'hidden',
+        },
+        variables: { colorPrimary: 'black' },
+      }}
+    >
       <html lang="en">
         <body className={inter.className}>
           <ToastProvider />
