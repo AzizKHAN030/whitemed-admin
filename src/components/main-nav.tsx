@@ -24,6 +24,13 @@ const MainNav = ({
       href: `/${params.storeId}/billboards`,
       label: 'Billboards',
       active: pathname === `/${params.storeId}/billboards`,
+      subActive: pathname.includes(`/${params.storeId}/billboards`),
+    },
+    {
+      href: `/${params.storeId}/categories`,
+      label: 'Categories',
+      active: pathname === `/${params.storeId}/categories`,
+      subActive: pathname.includes(`/${params.storeId}/categories`),
     },
     {
       href: `/${params.storeId}/settings`,
@@ -40,8 +47,9 @@ const MainNav = ({
           href={route.href}
           className={cn(
             'text-sm font-medium transition-colors text-muted-foreground hover:bg-gray-100 hover:text-black p-2 rounded-lg',
+            route.subActive && 'bg-gray-200 text-black',
             route.active &&
-              ' text-white bg-black hover:bg-black hover:text-white'
+              'text-white bg-black hover:bg-black hover:text-white'
           )}
         >
           {route.label}
