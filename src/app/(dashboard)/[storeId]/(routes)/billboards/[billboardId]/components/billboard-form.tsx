@@ -11,7 +11,6 @@ import { Trash } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { z } from 'zod';
 
-import ApiAlert from '@/components/api-alert';
 import Heading from '@/components/heading';
 import ImageUpload from '@/components/image-upload';
 import AlertModal from '@/components/modals/alert-modal';
@@ -26,7 +25,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import useOrigin from '@/hooks/use-origin';
 
 interface BillboardFormProps {
   initialData: Billboard | null;
@@ -44,7 +42,6 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const origin = useOrigin();
   const params = useParams();
 
   const title = initialData ? 'Edit Billboard' : 'New Billboard';
@@ -73,21 +70,18 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
           success: 'Changes saved!',
           error: 'Error saving changes',
         });
-
-        router.refresh();
       } else {
         const request = axios.post(`/api/${params.storeId}/billboards`, values);
 
-        const {
-          data: { id },
-        } = await toast.promise(request, {
+        await toast.promise(request, {
           loading: 'Creating...',
           success: 'Billboard created!',
           error: 'Error creating a billboard',
         });
-
-        router.push(`/${params.storeId}/billboards/${id}`);
       }
+
+      router.push(`/${params.storeId}/billboards/`);
+      router.refresh();
     } catch (error) {
       console.error(error);
     } finally {
@@ -186,11 +180,6 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
           </Button>
         </form>
       </Form>
-      <Separator />
-      <ApiAlert
-        title="NEXT_PUBLIC_API_URL"
-        description={`${origin}/api/${initialData?.id}`}
-      />
       <AlertModal
         isOpen={open}
         loading={loading}

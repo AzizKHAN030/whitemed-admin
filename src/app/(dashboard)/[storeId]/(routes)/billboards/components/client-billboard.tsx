@@ -3,13 +3,21 @@
 import React from 'react';
 
 import { Plus } from 'lucide-react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
+import ApiList from '@/components/api-list';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
-const ClientBillboard = () => {
+import { BillboardsColumn, columns } from './columns';
+import { DataTable } from './data-table';
+
+interface ClientBillboardProps {
+  data: BillboardsColumn[];
+}
+
+const ClientBillboard: React.FC<ClientBillboardProps> = ({ data }) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -17,7 +25,7 @@ const ClientBillboard = () => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Billboards (0)"
+          title={`Billboards (${data.length})`}
           description="Manage your billboards for your store"
         />
         <Button
@@ -30,6 +38,10 @@ const ClientBillboard = () => {
         </Button>
       </div>
       <Separator />
+      <DataTable columns={columns} data={data} filterColumn="label" />
+      <Heading title="API" description="API calls for Billboards" />
+      <Separator />
+      <ApiList entityName="billboards" entityIdName="billboardId" />
     </>
   );
 };
