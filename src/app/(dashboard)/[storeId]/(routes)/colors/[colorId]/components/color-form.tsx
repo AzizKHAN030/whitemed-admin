@@ -107,6 +107,7 @@ const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
         error: 'Error deleting color',
       });
 
+      router.push(`/${params.storeId}/colors`);
       router.refresh();
     } catch (error) {
       console.error(error);

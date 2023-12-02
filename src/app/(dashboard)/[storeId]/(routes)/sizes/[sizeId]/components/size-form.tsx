@@ -100,6 +100,7 @@ const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
         error: 'Error deleting size',
       });
 
+      router.push(`/${params.storeId}/sizes`);
       router.refresh();
     } catch (error) {
       console.error(error);
