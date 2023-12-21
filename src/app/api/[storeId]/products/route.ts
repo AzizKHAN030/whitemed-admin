@@ -84,6 +84,7 @@ export async function GET(
     const colorId = searchParams.get('colorId') || undefined;
     const sizeId = searchParams.get('sizeId') || undefined;
     const isFeatured = searchParams.get('isFeatured');
+    const limit = searchParams.get('limit') || undefined;
 
     if (!params.storeId) {
       return new NextResponse('Store ID is required!', { status: 400 });
@@ -107,6 +108,7 @@ export async function GET(
       orderBy: {
         createdAt: 'desc',
       },
+      take: limit ? Number(limit) : undefined,
     });
 
     return NextResponse.json(products);
